@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -52,5 +53,15 @@ public class ExpenseController {
     @GetMapping("/expenses/name")
     public List<Expense> getAllExpensesByName(@RequestParam String name, Pageable page) {
         return expenseService.readByName(name,page);
+    }
+
+
+    //api/v1/expenses/date?startDate=2021-01-01&endDate=2021-03-31
+    @GetMapping("/expenses/date")
+    public List<Expense> getAllExpensesByDate(
+            @RequestParam(required = false) Date startDate,
+            @RequestParam(required = false) Date endDate,
+            Pageable page) {
+        return expenseService.readByDate(startDate,endDate,page);
     }
 }
