@@ -1,9 +1,10 @@
-package com.github.juliherms.expensetrackerapi.service;
+package com.github.juliherms.expensetrackerapi.service.impl;
 
 import com.github.juliherms.expensetrackerapi.entity.Expense;
 import com.github.juliherms.expensetrackerapi.exceptions.ExpenseNotFoundException;
 import com.github.juliherms.expensetrackerapi.exceptions.ResourceNotFoundException;
 import com.github.juliherms.expensetrackerapi.repository.ExpenseRepository;
+import com.github.juliherms.expensetrackerapi.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

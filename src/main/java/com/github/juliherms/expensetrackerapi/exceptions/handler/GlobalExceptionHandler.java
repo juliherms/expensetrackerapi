@@ -1,6 +1,9 @@
-package com.github.juliherms.expensetrackerapi.exceptions;
+package com.github.juliherms.expensetrackerapi.exceptions.handler;
 
 import com.github.juliherms.expensetrackerapi.entity.ErrorObject;
+import com.github.juliherms.expensetrackerapi.exceptions.ItemAlreadyExistsException;
+import com.github.juliherms.expensetrackerapi.exceptions.ResourceNotFoundException;
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,6 +33,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         eObject.setTimestamp(new Date());
 
         return new ResponseEntity<ErrorObject>(eObject,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ItemAlreadyExistsException.class)
+    public ResponseEntity<Object> handleItemExistsException(ItemAlreadyExistsException ex, WebRequest request) {
+        ErrorObject eObject = new ErrorObject();
+
+        eObject.setStatusCode(HttpStatus.CONFLICT.value());
+        eObject.setMessage(ex.getMessage());
+        eObject.setTimestamp(new Date());
+
+        return new ResponseEntity<Object>(eObject,HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
