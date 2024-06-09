@@ -8,10 +8,14 @@ import com.github.juliherms.expensetrackerapi.repository.UserRepository;
 import com.github.juliherms.expensetrackerapi.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private PasswordEncoder bcryptEncoder;
 
     public final String EXISTS_EMAIL_FROM_USER = "User is already registered with email";
     public final String USER_NOT_FOUND = "User not found for the id";
@@ -27,6 +31,7 @@ public class UserServiceImpl implements UserService {
 
         User newUser = new User();
         BeanUtils.copyProperties(user,newUser);
+        newUser.setPassword(bcryptEncoder.encode(newUser.getPassword()));
         return userRepository.save(newUser);
     }
 
@@ -42,7 +47,7 @@ public class UserServiceImpl implements UserService {
         //TODO: check to it's possible to update email and password
         foundUser.setName(user.getName() != null ? user.getName() : foundUser.getName());
         foundUser.setName(user.getEmail() != null ? user.getEmail() : foundUser.getEmail());
-        foundUser.setName(user.getPassword() != null ? user.getPassword() : foundUser.getPassword());
+        foundUser.setName(user.getPassword() != null ? bcryptEncoder.encode(user.getPassword()) : foundUser.getPassword());
         foundUser.setAge(user.getAge() != null ? user.getAge() : foundUser.getAge());
 
         return userRepository.save(foundUser);
