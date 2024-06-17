@@ -39,26 +39,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User read(Long id) {
-        return  userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("%s : %s", USER_NOT_FOUND, id)));
+    public User read() {
+        Long userId = getLoggedInUser().getId();
+        return  userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(String.format("%s : %s", USER_NOT_FOUND, userId)));
     }
 
     @Override
-    public User update(UserModel user, Long id) {
-        User foundUser = read(id); //find user to update
+    public User update(UserModel user) {
+        User existingUser = read();
 
         //TODO: check to it's possible to update email and password
-        foundUser.setName(user.getName() != null ? user.getName() : foundUser.getName());
-        foundUser.setName(user.getEmail() != null ? user.getEmail() : foundUser.getEmail());
-        foundUser.setName(user.getPassword() != null ? bcryptEncoder.encode(user.getPassword()) : foundUser.getPassword());
-        foundUser.setAge(user.getAge() != null ? user.getAge() : foundUser.getAge());
+        existingUser.setName(user.getName() != null ? user.getName() : existingUser.getName());
+        existingUser.setName(user.getEmail() != null ? user.getEmail() : existingUser.getEmail());
+        existingUser.setName(user.getPassword() != null ? bcryptEncoder.encode(user.getPassword()) : existingUser.getPassword());
+        existingUser.setAge(user.getAge() != null ? user.getAge() : existingUser.getAge());
 
-        return userRepository.save(foundUser);
+        return userRepository.save(existingUser);
     }
 
     @Override
-    public void delete(Long id) {
-        User foundUser = read(id);
+    public void delete() {
+        User foundUser = read();
         userRepository.delete(foundUser);
     }
 
