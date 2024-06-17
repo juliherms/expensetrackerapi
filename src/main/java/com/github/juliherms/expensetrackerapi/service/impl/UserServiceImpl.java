@@ -8,6 +8,9 @@ import com.github.juliherms.expensetrackerapi.repository.UserRepository;
 import com.github.juliherms.expensetrackerapi.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,5 +60,16 @@ public class UserServiceImpl implements UserService {
     public void delete(Long id) {
         User foundUser = read(id);
         userRepository.delete(foundUser);
+    }
+
+    @Override
+    public User getLoggedInUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("User not found for the email" + email)
+        );
     }
 }

@@ -5,6 +5,7 @@ import com.github.juliherms.expensetrackerapi.exceptions.ExpenseNotFoundExceptio
 import com.github.juliherms.expensetrackerapi.exceptions.ResourceNotFoundException;
 import com.github.juliherms.expensetrackerapi.repository.ExpenseRepository;
 import com.github.juliherms.expensetrackerapi.service.ExpenseService;
+import com.github.juliherms.expensetrackerapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,9 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Autowired
     private ExpenseRepository expenseRepo;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Page<Expense> getAllExpenses(Pageable page) {
@@ -42,6 +46,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public Expense saveExpenseDetails(Expense expense){
+        expense.setUser(userService.getLoggedInUser());
         return expenseRepo.save(expense);
     }
 
